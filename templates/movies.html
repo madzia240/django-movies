@@ -10,8 +10,19 @@
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
 <body>
+    <section class="login">
+        {% if user.is_authenticated %}
+            <p>Hello, {{ user.username }}</p>
+            <button><a href="{% url 'logout' %}">logout</a></button>
+        {% else %}
+            <button><a href="{% url 'login' %}">login</a></button>
+        {% endif %}
+    </section>
+    <hr>
     <h1>Movies</h1>
-    <button><a href="{% url 'new_movie' %}">add movie</a></button>
+    {% if user.is_authenticated %}
+        <button><a href="{% url 'new_movie' %}">add movie</a></button>
+    {% endif %}
     {% if movies|length == 0 %}
         <h2>There are no movies in database</h2>
     {% else %}
@@ -22,8 +33,10 @@
             <p>Imdb ranking: {{ movie.imdb_ranking }}</p>
             <img src="/media/{{ movie.poster }}" alt="{{movie.title}}">
             <p>{{ movie.description }}</p>
-            <a href="{% url 'movie_edit' movie.id %}">edit</a>
-            <a href="{% url 'movie_delete' movie.id %}">delete</a>
+            {% if user.is_authenticated %}
+                <a href="{% url 'movie_edit' movie.id %}">edit</a>
+                <a href="{% url 'movie_delete' movie.id %}">delete</a>
+            {% endif %}
             <hr>
         {% endfor %}
     {% endif %}
