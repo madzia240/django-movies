@@ -1,0 +1,32 @@
+{% load static%}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <h1>Movies</h1>
+    <button><a href="{% url 'new_movie' %}">add movie</a></button>
+    {% if movies|length == 0 %}
+        <h2>There are no movies in database</h2>
+    {% else %}
+       <h2>movies in database: ({{ movies|length }})</h2>
+        {% for movie in movies %}
+            <hr>
+            <h3>{{ movie }}</h3>
+            <p>Imdb ranking: {{ movie.imdb_ranking }}</p>
+            <img src="/media/{{ movie.poster }}" alt="{{movie.title}}">
+            <p>{{ movie.description }}</p>
+            <a href="{% url 'movie_edit' movie.id %}">edit</a>
+            <a href="{% url 'movie_delete' movie.id %}">delete</a>
+            <hr>
+        {% endfor %}
+    {% endif %}
+
+</body>
+</html>
