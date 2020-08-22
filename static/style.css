@@ -1,2 +1,55 @@
 * {
-    color: green}
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 5vh 5vw;
+}
+
+.movies {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.card {
+    width: 80vw;
+    margin: 5vh auto;
+}
+
+@media(min-width: 640px) {
+    .movies {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .card {
+        flex-basis: 40%;
+    }
+}
+@media(min-width: 1024px) {
+    .movies {
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .card {
+        flex-basis: 26%;
+    }
+}
+.btn-primary {
+    background-color: #777;
+    border-color: #777;
+    text-transform: uppercase;
+}
+
+.card .login {
+    width: 80vw;
+}
+@media(min-width: 640px) {
+    .card .login {
+        width: 50vw;
+    }
+}
