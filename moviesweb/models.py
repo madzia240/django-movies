@@ -10,3 +10,13 @@ class Movie(models.Model):
 
     def __str__(self):
         return f'{self.title} ({self.year})'
+
+
+class Rating(models.Model):
+    review = models.TextField(default="", blank=True)
+    rating = models.PositiveSmallIntegerField(default=5)
+    name = models.CharField(max_length=80, default="", blank=True)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Review added by {self.name}'

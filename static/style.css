@@ -53,3 +53,26 @@ body {
         width: 50vw;
     }
 }
+
+.list-label {
+    margin-left: 5%;
+}
+
+.movie-detail {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+.movie-detail .card {
+    width: 80vw;
+}
+@media(min-width:980px) {
+    .movie-detail {
+    flex-direction: row;
+}
+
+.movie-detail .card {
+    flex-basis: 40vw;
+}
+}
