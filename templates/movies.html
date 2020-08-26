@@ -16,18 +16,19 @@
         <a class="btn btn-primary" href="{% url 'new_movie' %}"><i class="fas fa-plus"></i> add movie</a>
     {% else %}
         <a class="btn btn-primary" href="{% url 'login' %}" role="button">login</a>
+        <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
     {% endif %}
 </div>
     <section class="movies">
         {% for movie in movies %}
             <div class="card">
-              <img src="/media/{{ movie.poster }}" alt="{{movie.title}}" class="card-img-top">
+                <a href="{% url 'movie_detail' movie.id %}"><img src="/media/{{ movie.poster }}" alt="{{movie.title}}" class="card-img-top"></a>
               <div class="card-body">
                 <h5 class="card-title">{{ movie }}</h5>
                   <h6>Imdb ranking: {{ movie.imdb_ranking }}</h6>
                 <p class="card-text">{{ movie.description }}</p>
-                {% if user.is_authenticated %}
                   <a class="btn btn-primary" href="{% url 'movie_detail' movie.id %}" role="button"><i class="fas fa-angle-double-right"></i> details</a>
+                {% if user.is_authenticated %}
                   <a class="btn btn-primary" href="{% url 'movie_edit' movie.id %}" role="button"><i class="fas fa-edit"></i> edit</a>
                   <a class="btn btn-primary" href="{% url 'movie_delete' movie.id %}" role="button"><i class="fas fa-trash-alt"></i> delete</a>
                   {% endif %}

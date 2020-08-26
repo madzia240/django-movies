@@ -9,6 +9,7 @@
                 {% csrf_token %}
                 {{ form|bootstrap }}
                 <button class="btn btn-primary" type="submit"><i class="fas fa-sign-in-alt"></i> login</button>
+                <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
                 <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
             </form>
         </div>

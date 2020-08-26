@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Movie(models.Model):
@@ -15,7 +16,7 @@ class Movie(models.Model):
 class Rating(models.Model):
     review = models.TextField(default="", blank=True)
     rating = models.PositiveSmallIntegerField(default=5)
-    name = models.CharField(max_length=80, default="", blank=True)
+    name = models.ForeignKey(User, on_delete=models.CASCADE)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
 
     def __str__(self):
