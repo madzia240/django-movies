@@ -4,11 +4,28 @@
     box-sizing: border-box;
 }
 
-body {
-    margin: 5vh 5vw;
-}
 
+nav {
+    width: 100vw;
+    height: 50px;
+    padding: 5px 10px;
+    background-color: #666;
+    display: flex;
+    justify-content: space-between;
+}
+nav .card-text {
+    line-height: 40px;
+}
+nav .btn {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.btn {
+    font-size: 12px;
+}
 .movies {
+
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;

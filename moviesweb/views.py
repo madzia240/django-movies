@@ -2,8 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.urls import reverse
+from django.contrib.postgres.search import SearchVector
 from .models import Movie, Rating
-from .forms import MovieForm, RatingForm, CustomUserCreationForm
+from .forms import MovieForm, RatingForm, CustomUserCreationForm, SearchForm
 
 
 def all_movies(request):
@@ -54,7 +55,7 @@ def new_review(request, id):
         if 'rating' in request.POST:
             review = review_form.save(commit=False)
             review.movie = movie
-            review.name = request.user.username
+            review.name = request.user
             review.save()
             return redirect('movie_detail', id=movie.id)
     return render(request, 'review_form.html', {'review_form': review_form, 'movie': movie})
@@ -69,3 +70,15 @@ def register(request):
             user = form.save()
             login(request, user)
             return redirect(reverse("all_movies"))
+
+
+def movie_search(request):
+    form = SearchForm()
+    query = None
+    results = []
+    if 'query' in request.GET:
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            results = Movie.objects.annotate(search=SearchVector('title','description'),).filter(search=query)
+    return render(request, 'search.html', {'search_form': form, 'query': query, 'results': results})

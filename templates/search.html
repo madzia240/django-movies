@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% load bootstrap %}
+{% block title %}
+    Search
+{% endblock %}
+{% block page %}
+    {% if 'query' in request.GET %}
+        <h1>Movies</h1>
+        <h3>Found ({{ results|length }}):</h3>
+        {% for result in results %}
+                <h4><a href="{% url 'movie_detail' result.id %}">{{ result.title }}</a></h4>
+        {% empty %}
+            <p>no results</p>
+        {% endfor %}
+    {% else %}
+        <h1>movies search</h1>
+        <form action="." method="get">
+            {% csrf_token %}
+            {{ search_form|bootstrap }}
+            <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i> Search</button>
+        </form>
+    {% endif %}
+    <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+{% endblock %}

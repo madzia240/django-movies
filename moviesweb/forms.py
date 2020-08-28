@@ -1,4 +1,5 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
+from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import Movie, Rating
 
@@ -12,9 +13,13 @@ class MovieForm(ModelForm):
 class RatingForm(ModelForm):
     class Meta:
         model = Rating
-        fields = ['review', 'rating', 'name']
+        fields = ['review', 'rating']
 
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
-        fields = UserCreationForm.Meta.fields
+        fields = UserCreationForm.Meta.fields + ("email",)
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField()

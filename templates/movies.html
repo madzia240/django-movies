@@ -9,15 +9,8 @@
         There are no movies in database
       {% else %}
         movies in database: ({{ movies|length }})</p>
-  <hr class="my-4">
-    {% if user.is_authenticated %}
-        <p class="card-text">Hello, {{ user.username }}</p>
-        <a class="btn btn-primary" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i> logout</a>
-        <a class="btn btn-primary" href="{% url 'new_movie' %}"><i class="fas fa-plus"></i> add movie</a>
-    {% else %}
-        <a class="btn btn-primary" href="{% url 'login' %}" role="button">login</a>
-        <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
-    {% endif %}
+    <hr>
+    <a class="btn btn-primary" href="{% url 'search' %}" role="button">movies search</a>
 </div>
     <section class="movies">
         {% for movie in movies %}
@@ -28,7 +21,7 @@
                   <h6>Imdb ranking: {{ movie.imdb_ranking }}</h6>
                 <p class="card-text">{{ movie.description }}</p>
                   <a class="btn btn-primary" href="{% url 'movie_detail' movie.id %}" role="button"><i class="fas fa-angle-double-right"></i> details</a>
-                {% if user.is_authenticated %}
+                {% if user.is_staff %}
                   <a class="btn btn-primary" href="{% url 'movie_edit' movie.id %}" role="button"><i class="fas fa-edit"></i> edit</a>
                   <a class="btn btn-primary" href="{% url 'movie_delete' movie.id %}" role="button"><i class="fas fa-trash-alt"></i> delete</a>
                   {% endif %}

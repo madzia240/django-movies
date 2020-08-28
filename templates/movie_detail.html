@@ -20,8 +20,13 @@
           <li class="list-group-item"><strong>{{ rating.review }}</br>Rating: {{ rating.rating }}</br></strong>{{ rating }}</li>
           {% endfor %}
       </ul>
-              <a class="btn btn-primary" href="{% url 'new_review' movie.id %}" role="button"><i class="fas fa-edit"></i> new review</a>
-        <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+      <hr>
+        {% if user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'new_review' movie.id %}" role="button"><i class="fas fa-edit"></i> new review</a>
+        {% else %}
+              <p>Log-in to add review</p>
+        {% endif %}
+            <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
       </div>
     </div>
 </section>
