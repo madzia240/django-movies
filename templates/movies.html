@@ -10,7 +10,7 @@
       {% else %}
         movies in database: ({{ movies|length }})</p>
     <hr>
-    <a class="btn btn-primary" href="{% url 'search' %}" role="button">movies search</a>
+    <a class="btn btn-primary" href="{% url 'search' %}" role="button"><i class="fas fa-search"></i> movies search</a>
 </div>
     <section class="movies">
         {% for movie in movies %}

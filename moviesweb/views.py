@@ -3,8 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.urls import reverse
 from django.contrib.postgres.search import SearchVector
-from .models import Movie, Rating
-from .forms import MovieForm, RatingForm, CustomUserCreationForm, SearchForm
+from .models import Movie, Rating, Message
+from .forms import MovieForm, RatingForm, CustomUserCreationForm, SearchForm, MessageForm
 
 
 def all_movies(request):
@@ -80,5 +80,47 @@ def movie_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = Movie.objects.annotate(search=SearchVector('title','description'),).filter(search=query)
+            results = Movie.objects.annotate(search=SearchVector('title','description'),).filter(search__icontains=query)
     return render(request, 'search.html', {'search_form': form, 'query': query, 'results': results})
+
+
+def messages(request):
+    messages = Message.objects.all()
+    inbox_messages = Message.objects.filter(reciever=request.user).order_by('-id')
+    sentbox_messages = Message.objects.filter(sender=request.user).order_by('-id')
+    return render(request, 'messages.html', {'messages': messages, 'inbox_messages': inbox_messages, 'sentbox_messages': sentbox_messages})
+
+
+def send_message(request):
+    message_form = MessageForm(request.POST or None)
+    if request.method == 'POST':
+        message = message_form.save(commit=False)
+        message.sender = request.user
+        message.save()
+        return redirect('messages')
+    return render(request, 'send_message.html', {'message_form': message_form})
+
+
+def message_detail(request, id):
+    message = get_object_or_404(Message, pk=id)
+    return render(request, 'message_detail.html', {'message': message})
+
+
+def answer_message(request, id):
+    answering_message = get_object_or_404(Message, pk=id)
+    message_form = MessageForm(request.POST or None, initial={'reciever': answering_message.sender})
+    if request.method == 'POST':
+        message = message_form.save(commit=False)
+        message.sender = request.user
+        message.save()
+        return redirect('messages')
+    return render(request, 'answer_message.html', {'message_form': message_form, 'answering_message': answering_message})
+
+
+def delete_message(request, id):
+    is_message = True
+    message = get_object_or_404(Message, pk=id)
+    if request.method == 'POST':
+        message.delete()
+        return redirect(messages)
+    return render(request, 'confirm.html', {'message': message, 'is_message': is_message})

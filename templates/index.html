@@ -17,6 +17,7 @@
         {% if user.is_authenticated %}
             <h6 class="card-text">Hello, {{ user.username }}</h6>
             <div class="login_logout">
+                <a class="btn btn-primary" href="{% url 'messages' %}" role="button"><i class="fas fa-comments"></i> messages</a>
                 <a class="btn btn-primary" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i> logout</a>
                 {% if user.is_staff %}
                 <a class="btn btn-primary" href="{% url 'new_movie' %}"><i class="fas fa-plus"></i> add movie</a>
@@ -29,6 +30,8 @@
             </div>
         {% endif %}
     </nav>
-    {% block page %} {% endblock %}
+    <main>
+        {% block page %} {% endblock %}
+    </main>
 </body>
 </html>

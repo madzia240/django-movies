@@ -21,3 +21,12 @@ class Rating(models.Model):
 
     def __str__(self):
         return f'Review added by {self.name}'
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)
+    reciever = models.ForeignKey(User, related_name='reciever', on_delete=models.CASCADE)
+    msg_text = models.TextField(default='', blank=True)
+
+    def __str__(self):
+        return f'message from {self.sender} to {self.reciever}'

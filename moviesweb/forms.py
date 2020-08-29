@@ -1,7 +1,7 @@
-from django.forms import ModelForm, Form
+from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Movie, Rating
+from .models import Movie, Rating, Message
 
 
 class MovieForm(ModelForm):
@@ -23,3 +23,9 @@ class CustomUserCreationForm(UserCreationForm):
 
 class SearchForm(forms.Form):
     query = forms.CharField()
+
+
+class MessageForm(ModelForm):
+    class Meta:
+        model = Message
+        fields = ['reciever', 'msg_text']

@@ -1,8 +1,3 @@
-db.sqlite3
-/movies/Lib
-/movies/Include
-/movies/Scripts
-/movies/__pycache__/
-/movies/pyvenv.cfg
-/movies/asgi.py
-.idea
+*.sqlite3
+*.idea
+*pyc
