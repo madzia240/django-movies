@@ -3,8 +3,12 @@
 {% load bootstrap %}
 {% block title %} Send message {% endblock %}
 {% block page %}
-    <h6>Your are answering to {{ answering_message.reciever }}. Message text:</h6>
-    <p>{{ answering_message.msg_text }}</p>
+    <div class="card">
+      <div class="card-body">
+        <h6>Your are answering to {{ answering_message.reciever }}.</h6><hr>
+          <p><strong>Message from {{  answering_message.reciever }} text:</strong><br>{{ answering_message.msg_text }}</p>
+      </div>
+    </div>
     <div class="card">
       <div class="card-body">
         <form method="post" enctype="multipart/form-data">

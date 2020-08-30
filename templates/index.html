@@ -1,37 +1,43 @@
 {% load static %}
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %} {% endblock %}</title>
     <script src="https://kit.fontawesome.com/0ec734c6a7.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'style.css' %}">
 </head>
+
 <body>
     <nav>
         {% if user.is_authenticated %}
-            <h6 class="card-text">Hello, {{ user.username }}</h6>
-            <div class="login_logout">
-                <a class="btn btn-primary" href="{% url 'messages' %}" role="button"><i class="fas fa-comments"></i> messages</a>
-                <a class="btn btn-primary" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i> logout</a>
-                {% if user.is_staff %}
-                <a class="btn btn-primary" href="{% url 'new_movie' %}"><i class="fas fa-plus"></i> add movie</a>
-                {% endif %}
-            </div>
+        <h6 class="card-text">Hello, {{ user.username }}</h6>
+        <div class="login_logout">
+            <a class="btn btn-primary messages" href="{% url 'messages' %}" role="button"><i
+                    class="fas fa-comments"></i> messages</a>
+            <a class="btn btn-primary" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>
+                logout</a>
+            {% if user.is_staff %}
+            <a class="btn btn-primary" href="{% url 'new_movie' %}"><i class="fas fa-plus"></i> add movie</a>
+            {% endif %}
+        </div>
         {% else %}
-            <div class="login_logout">
-                <a class="btn btn-primary" href="{% url 'login' %}" role="button"><i class="fas fa-sign-in-alt"></i> login</a>
-                <a class="btn btn-primary" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
-            </div>
+        <div class="login_logout">
+            <a class="btn btn-primary" href="{% url 'login' %}" role="button"><i class="fas fa-sign-in-alt"></i>
+                login</a>
+            <a class="btn btn-primary" href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
+        </div>
         {% endif %}
     </nav>
     <main>
         {% block page %} {% endblock %}
     </main>
 </body>
+
 </html>

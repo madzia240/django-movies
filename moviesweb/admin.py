@@ -15,4 +15,4 @@ class RatingAdmin(admin.ModelAdmin):
 
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ['sender', 'reciever', 'msg_text']
+    list_display = ['sender', 'reciever', 'msg_text', 'readed']

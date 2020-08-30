@@ -26,7 +26,8 @@ def new_movie(request):
 def edit_movie(request, id):
     new = False
     movie = get_object_or_404(Movie, pk=id)
-    form = MovieForm(request.POST or None, request.FILES or None, instance=movie)
+    form = MovieForm(request.POST or None,
+                     request.FILES or None, instance=movie)
     if form.is_valid():
         form.save()
         return redirect(all_movies)
@@ -80,14 +81,17 @@ def movie_search(request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results = Movie.objects.annotate(search=SearchVector('title','description'),).filter(search__icontains=query)
+            results = Movie.objects.annotate(search=SearchVector(
+                'title', 'description'),).filter(search__icontains=query)
     return render(request, 'search.html', {'search_form': form, 'query': query, 'results': results})
 
 
 def messages(request):
     messages = Message.objects.all()
-    inbox_messages = Message.objects.filter(reciever=request.user).order_by('-id')
-    sentbox_messages = Message.objects.filter(sender=request.user).order_by('-id')
+    inbox_messages = Message.objects.filter(
+        reciever=request.user).order_by('-id')
+    sentbox_messages = Message.objects.filter(
+        sender=request.user).order_by('-id')
     return render(request, 'messages.html', {'messages': messages, 'inbox_messages': inbox_messages, 'sentbox_messages': sentbox_messages})
 
 
@@ -103,12 +107,16 @@ def send_message(request):
 
 def message_detail(request, id):
     message = get_object_or_404(Message, pk=id)
+    if request.user == message.reciever:
+        message.readed = True
+        message.save()
     return render(request, 'message_detail.html', {'message': message})
 
 
 def answer_message(request, id):
     answering_message = get_object_or_404(Message, pk=id)
-    message_form = MessageForm(request.POST or None, initial={'reciever': answering_message.sender})
+    message_form = MessageForm(request.POST or None, initial={
+                               'reciever': answering_message.sender})
     if request.method == 'POST':
         message = message_form.save(commit=False)
         message.sender = request.user
