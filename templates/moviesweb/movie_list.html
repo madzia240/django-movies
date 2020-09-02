@@ -1,0 +1,33 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %} Movies database {% endblock %}
+{% block page %}
+<div class="jumbotron">
+  <h1 class="display-4">Movies database</h1>
+  <p class="lead">
+      {% if object_list|length == 0 %}
+        There are no movies in database
+      {% else %}
+        movies in database: ({{ object_list|length }})</p>
+    <hr>
+    <a class="btn btn-primary" href="{% url 'search' %}" role="button"><i class="fas fa-search"></i> movies search</a>
+</div>
+    <section class="movies">
+        {% for object in object_list %}
+            <div class="card">
+              <a href="{% url 'movie_detail' object.id %}"><img src="/media/{{ object.poster }}" alt="{{object.title}}" class="card-img-top"></a>
+              <div class="card-body">
+                <h5 class="card-title">{{ object }}</h5>
+                  <h6>Imdb ranking: {{ object.imdb_ranking }}</h6>
+                <p class="card-text">{{ object.description }}</p>
+                  <a class="btn btn-primary" href="{% url 'movie_detail' object.id %}" role="button"><i class="fas fa-angle-double-right"></i> details</a>
+                {% if user.is_staff %}
+                  <a class="btn btn-primary" href="{% url 'movie_edit' object.id %}" role="button"><i class="fas fa-edit"></i> edit</a>
+                  <a class="btn btn-primary" href="{% url 'movie_delete' object.id %}" role="button"><i class="fas fa-trash-alt"></i> delete</a>
+                  {% endif %}
+              </div>
+            </div>
+        {% endfor %}
+        </section>
+    {% endif %}
+{% endblock %}

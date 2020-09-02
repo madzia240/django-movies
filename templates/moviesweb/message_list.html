@@ -1,0 +1,54 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block title %} Messages {% endblock %}
+{% block page %}
+<a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+<hr>
+<a class="btn btn-primary" href="{% url 'send_message' %}" role="button"><i class="fas fa-comment"></i> new message</a>
+<h3>inbox</h3>
+{% if object_list|length %}
+  {% for object in object_list %}
+    {% if object.reciever == user %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ object }}</h5>
+        <p class="card-text">{{ object.msg_text|truncatewords:5 }}</p>
+          {% if object.readed %}
+          <a href="{% url 'message_detail' object.id %}" class="btn btn-primary" role="button"><i
+              class="fas fa-angle-double-right"></i> Message details</a>
+          {% else %}
+              <a href="{% url 'message_detail' object.id %}" class="btn btn-primary" role="button" style="background-color: #111"><i class="fas fa-exclamation-circle"></i> Message details</a>
+          {% endif %}
+          <a class='btn btn-primary' href="{% url 'answer_message' object.id %}" role="button"><i class="fas fa-comment"></i> Answer</a>
+          <a class="btn btn-primary" href="{% url 'delete_message' object.id %}" role="button"><i
+              class="fas fa-trash-alt"></i> delete</a>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% else %}
+<p>you don't have any messages</p>
+{% endif %}
+<h3>sentbox</h3>
+{% if object_list|length %}
+  {% for object in object_list %}
+    {% if object.sender == user %}
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">{{ object }}</h5>
+        <p class="card-text">{{ object.msg_text|truncatewords:5 }}</p>
+          <a href="{% url 'message_detail' object.id %}" class="btn btn-primary" role="button"><i
+              class="fas fa-angle-double-right"></i> Message details</a>
+          <a class='btn btn-primary' href="{% url 'answer_message' object.id %}" role="button"><i class="fas fa-comment"></i> Answer</a>
+          <a class="btn btn-primary" href="{% url 'delete_message' object.id %}" role="button"><i
+              class="fas fa-trash-alt"></i> delete</a>
+      </div>
+    </div>
+    {% endif %}
+  {% endfor %}
+{% else %}
+<p>you don't have any messages</p>
+{% endif %}
+<hr>
+<a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+{% endblock %}

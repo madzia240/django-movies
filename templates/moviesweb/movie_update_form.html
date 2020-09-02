@@ -1,16 +1,20 @@
 {% extends 'index.html' %}
 {% load bootstrap %}
 {% block title %}
-    new review
+    {% if new %}
+        Add new movie
+    {% else %}
+        Edit movie {{ form.title.value }}
+    {% endif %}
 {% endblock %}
 {% block page %}
 <div class="card">
   <div class="card-body">
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ review_form|bootstrap }}
+        {{ form|bootstrap }}
         <button class="btn btn-primary" type="submit"><i class="far fa-save"></i> save</button>
-        <a class="btn btn-primary" href="{% url 'movie_detail' object.id %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+        <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
     </form>
   </div>
 </div>

@@ -1,19 +1,20 @@
 from django.urls import path
-from moviesweb.views import all_movies, new_movie, edit_movie, delete_movie, movie_detail, new_review, register, \
-    movie_search, messages, send_message, message_detail, answer_message, delete_message
+from django.contrib.auth.decorators import login_required
+from moviesweb.views import NewMovieView, EditMovieView, DeleteMovieView, DetailMovieView, NewReviewView,\
+    SearchView, SendMessageView, DetailMessageView, AnswerMessageView, DeleteMessageView, AllMoviesView, RegisterView, AllMessagesView
 
 urlpatterns = [
-    path('', all_movies, name='all_movies'),
-    path('new/', new_movie, name='new_movie'),
-    path('edit/<int:id>/', edit_movie, name='movie_edit'),
-    path('detail/<int:id>/', movie_detail, name='movie_detail'),
-    path('new_review/<int:id>/', new_review, name='new_review'),
-    path('delete/<int:id>', delete_movie, name='movie_delete'),
-    path('register/', register, name='register'),
-    path('search/', movie_search, name='search'),
-    path('messages/', messages, name='messages'),
-    path('messages/send_message', send_message, name='send_message'),
-    path('messages/answer_message/<int:id>', answer_message, name='answer_message'),
-    path('messages/<int:id>', message_detail, name='message_detail'),
-    path('messages/delete/<int:id>', delete_message, name='delete_message'),
+    path('', AllMoviesView.as_view(), name='all_movies'),
+    path('new/', login_required(NewMovieView.as_view()), name='new_movie'),
+    path('edit/<int:pk>/', login_required(EditMovieView.as_view()), name='movie_edit'),
+    path('detail/<int:pk>/', DetailMovieView.as_view(), name='movie_detail'),
+    path('new_review/<int:pk>/', NewReviewView.as_view(), name='new_review'),
+    path('delete/<int:pk>', login_required(DeleteMovieView.as_view()), name='movie_delete'),
+    path('register/', RegisterView.as_view(), name='register'),
+    path('search/', SearchView.as_view(), name='search'),
+    path('messages/', login_required(AllMessagesView.as_view()), name='messages'),
+    path('messages/send_message', SendMessageView.as_view(), name='send_message'),
+    path('messages/answer_message/<int:id>', AnswerMessageView.as_view(), name='answer_message'),
+    path('messages/<int:pk>', DetailMessageView.as_view(), name='message_detail'),
+    path('messages/delete/<int:pk>', DeleteMessageView.as_view(), name='delete_message'),
 ]

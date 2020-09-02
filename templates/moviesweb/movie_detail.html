@@ -6,10 +6,10 @@
 {% block page %}
 <section class="movie-detail">
     <div class="card">
-      <img src="/media/{{ movie.poster }}" alt="{{movie.title}}" class="card-img-top">
+      <img src="/media/{{ object.poster }}" alt="{{object.title}}" class="card-img-top">
       <div class="card-body">
-        <h5 class="card-title">{{ movie }}</h5>
-          <p class="card-text">{{ movie.description }}</br><strong>Imdb rating: {{ movie.imdb_ranking }}</strong></p>
+        <h5 class="card-title">{{ object }}</h5>
+          <p class="card-text">{{ object.description }}</br><strong>Imdb rating: {{ object.imdb_ranking }}</strong></p>
       </div>
     </div>
     <div class="card">
@@ -22,7 +22,7 @@
       </ul>
       <hr>
         {% if user.is_authenticated %}
-            <a class="btn btn-primary" href="{% url 'new_review' movie.id %}" role="button"><i class="fas fa-edit"></i> new review</a>
+            <a class="btn btn-primary" href="{% url 'new_review' object.id %}" role="button"><i class="fas fa-edit"></i> new review</a>
         {% else %}
               <p>Log-in to add review</p>
         {% endif %}

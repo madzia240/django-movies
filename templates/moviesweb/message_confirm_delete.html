@@ -1,20 +1,12 @@
 {% extends 'index.html' %}
 
 {% block title %}
-    {% if is_message %}
-        {{ message }} - delete
-    {% else %}
-        {{ movie }} - delete
-    {% endif %}
+    {{ message }} - delete
 {% endblock %}
 {% block page %}
 <div class="card">
   <div class="card-body">
-      {% if is_message %}
-          <h2>You are going to delete message '{{ message }}' from database. Are you sure?</h2>
-      {% else %}
-      <h2>You are going to delete movie '{{ movie }}' from database. Are you sure?</h2>
-      {% endif %}
+      <h2>You are going to delete message '{{ message }}' from database. Are you sure?</h2>
       <form method="post">
         {% csrf_token %}
         <button class="btn btn-danger" type="submit"><i class="fas fa-trash-alt"></i> Delete</button>

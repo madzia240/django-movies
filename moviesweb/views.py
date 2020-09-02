@@ -1,71 +1,64 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
+from django.views import View
+from django.views.generic import list
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.detail import DetailView
 from django.contrib.postgres.search import SearchVector
 from .models import Movie, Rating, Message
-from .forms import MovieForm, RatingForm, CustomUserCreationForm, SearchForm, MessageForm
+from .forms import RatingForm, CustomUserCreationForm, SearchForm, MessageForm
 
 
-def all_movies(request):
-    movies = Movie.objects.all()
-    return render(request, 'movies.html', {'movies': movies})
+class AllMoviesView(list.ListView):
+    model = Movie
 
 
-@login_required
-def new_movie(request):
-    new = True
-    form = MovieForm(request.POST or None, request.FILES or None)
-    if form.is_valid():
-        form.save()
-        return redirect(all_movies)
-    return render(request, 'movie_form.html', {'form': form, 'new': new})
+class NewMovieView(CreateView):
+    model = Movie
+    fields = ['title', 'year', 'description', 'imdb_ranking', 'poster']
 
 
-@login_required
-def edit_movie(request, id):
-    new = False
-    movie = get_object_or_404(Movie, pk=id)
-    form = MovieForm(request.POST or None,
-                     request.FILES or None, instance=movie)
-    if form.is_valid():
-        form.save()
-        return redirect(all_movies)
-    return render(request, 'movie_form.html', {'form': form, 'new': new})
+class EditMovieView(UpdateView):
+    model = Movie
+    fields = ['title', 'year', 'description', 'imdb_ranking', 'poster']
+    template_name_suffix = '_update_form'
 
 
-@login_required
-def delete_movie(request, id):
-    movie = get_object_or_404(Movie, pk=id)
-    if request.method == 'POST':
-        movie.delete()
-        return redirect(all_movies)
-    return render(request, 'confirm.html', {'movie': movie})
+class DeleteMovieView(DeleteView):
+    model = Movie
+    success_url = reverse_lazy('all_movies')
 
 
-def movie_detail(request, id):
-    movie = get_object_or_404(Movie, pk=id)
-    ratings = Rating.objects.filter(movie=movie)
-    return render(request, 'movie_detail.html', {'movie': movie, 'ratings': ratings})
+class DetailMovieView(DetailView):
+    model = Movie
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
 
 
-def new_review(request, id):
-    movie = get_object_or_404(Movie, pk=id)
-    review_form = RatingForm(request.POST or None)
-    if request.method == 'POST':
-        if 'rating' in request.POST:
-            review = review_form.save(commit=False)
-            review.movie = movie
-            review.name = request.user
-            review.save()
-            return redirect('movie_detail', id=movie.id)
-    return render(request, 'review_form.html', {'review_form': review_form, 'movie': movie})
+class NewReviewView(View):
+    review_form = RatingForm
+
+    def get(self, request, id):
+        movie = get_object_or_404(Movie, pk=id)
+        review_form = self.review_form(request.POST or None, initial={
+            'movie': movie})
+        return render(request, 'review_form.html', {'review_form': review_form, 'movie': movie})
+
+    def post(self, request):
+        review = self.review_form.save(commit=False)
+        review.name = request.user
+        review.save()
+        return redirect('all_movies')
 
 
-def register(request):
-    if request.method == "GET":
+class RegisterView(View):
+    def get(self, request):
         return render(request, "register.html", {"form": CustomUserCreationForm})
-    elif request.method == "POST":
+
+    def post(self, request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
@@ -73,62 +66,68 @@ def register(request):
             return redirect(reverse("all_movies"))
 
 
-def movie_search(request):
+class SearchView(View):
     form = SearchForm()
     query = None
     results = []
-    if 'query' in request.GET:
-        form = SearchForm(request.GET)
-        if form.is_valid():
-            query = form.cleaned_data['query']
-            results = Movie.objects.annotate(search=SearchVector(
-                'title', 'description'),).filter(search__icontains=query)
-    return render(request, 'search.html', {'search_form': form, 'query': query, 'results': results})
+
+    def get(self, request):
+        if 'query' in request.GET:
+            form = SearchForm(request.GET)
+            if form.is_valid():
+                query = form.cleaned_data['query']
+                self.results = Movie.objects.annotate(search=SearchVector(
+                    'title', 'description'),).filter(search__icontains=query)
+        return render(request, 'search.html', {'search_form': self.form, 'query': self.query, 'results': self.results})
 
 
-def messages(request):
-    messages = Message.objects.all()
-    inbox_messages = Message.objects.filter(
-        reciever=request.user).order_by('-id')
-    sentbox_messages = Message.objects.filter(
-        sender=request.user).order_by('-id')
-    return render(request, 'messages.html', {'messages': messages, 'inbox_messages': inbox_messages, 'sentbox_messages': sentbox_messages})
+class AllMessagesView(list.ListView):
+    model = Message
 
 
-def send_message(request):
-    message_form = MessageForm(request.POST or None)
-    if request.method == 'POST':
-        message = message_form.save(commit=False)
+class SendMessageView(View):
+    message_form = MessageForm
+
+    def post(self, request):
+        form = self.message_form(request.POST)
+        message = form.save(commit=False)
         message.sender = request.user
         message.save()
         return redirect('messages')
-    return render(request, 'send_message.html', {'message_form': message_form})
+
+    def get(self, request):
+        form = self.message_form
+        return render(request, 'send_message.html', {'message_form': form})
 
 
-def message_detail(request, id):
-    message = get_object_or_404(Message, pk=id)
-    if request.user == message.reciever:
-        message.readed = True
-        message.save()
-    return render(request, 'message_detail.html', {'message': message})
+class DetailMessageView(DetailView):
+    model = Message
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+    #     if request.user == self.model.reciever:
+    #         self.model.readed = True
 
 
-def answer_message(request, id):
-    answering_message = get_object_or_404(Message, pk=id)
-    message_form = MessageForm(request.POST or None, initial={
-                               'reciever': answering_message.sender})
-    if request.method == 'POST':
-        message = message_form.save(commit=False)
+class AnswerMessageView(View):
+    message_form = MessageForm
+
+    def get(self, request, id):
+        answering_message = get_object_or_404(Message, pk=id)
+        message_form = self.message_form(request.POST or None, initial={
+                                   'reciever': answering_message.sender})
+        return render(request, 'answer_message.html',
+                      {'message_form': message_form, 'answering_message': answering_message})
+
+    def post(self, request):
+        message = self.message_form.save(commit=False)
         message.sender = request.user
         message.save()
         return redirect('messages')
-    return render(request, 'answer_message.html', {'message_form': message_form, 'answering_message': answering_message})
 
 
-def delete_message(request, id):
-    is_message = True
-    message = get_object_or_404(Message, pk=id)
-    if request.method == 'POST':
-        message.delete()
-        return redirect(messages)
-    return render(request, 'confirm.html', {'message': message, 'is_message': is_message})
+class DeleteMessageView(DeleteView):
+    model = Message
+    success_url = reverse_lazy('messages')
