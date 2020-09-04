@@ -26,6 +26,9 @@ class Rating(models.Model):
     def __str__(self):
         return f'Review added by {self.name}'
 
+    def get_absolute_url(self):
+        return reverse('movie_detail', kwargs={'pk': self.movie.pk})
+
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='sender', on_delete=models.CASCADE)

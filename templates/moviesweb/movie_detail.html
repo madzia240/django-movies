@@ -13,14 +13,14 @@
       </div>
     </div>
     <div class="card">
-          <div class="card-body">
+       <div class="card-body">
         <h5 class="card-title">Reviews</h5><hr>
-      <ul class="list-group list-group-flush">
-          {% for rating in ratings %}
-          <li class="list-group-item"><strong>{{ rating.review }}</br>Rating: {{ rating.rating }}</br></strong>{{ rating }}</li>
-          {% endfor %}
-      </ul>
-      <hr>
+        <ul>
+            {% for rating in rating_list %}
+            <li><strong>{{ rating.review }}</br>Rating: {{ rating.rating }}</br></strong>{{ rating }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
         {% if user.is_authenticated %}
             <a class="btn btn-primary" href="{% url 'new_review' object.id %}" role="button"><i class="fas fa-edit"></i> new review</a>
         {% else %}

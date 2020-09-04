@@ -7,7 +7,7 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.postgres.search import SearchVector
 from .models import Movie, Rating, Message
-from .forms import RatingForm, CustomUserCreationForm, SearchForm, MessageForm
+from .forms import CustomUserCreationForm, SearchForm, MessageForm
 
 
 class AllMoviesView(list.ListView):
@@ -34,24 +34,20 @@ class DetailMovieView(DetailView):
     model = Movie
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+        movie = get_object_or_404(Movie, id=self.object.pk)
+        kwargs['rating_list'] = Rating.objects.filter(movie=movie)
+        return super(DetailMovieView, self).get_context_data(**kwargs)
 
 
-class NewReviewView(View):
-    review_form = RatingForm
+class NewReviewView(CreateView):
+    model = Rating
+    template_name = 'moviesweb/rating_form.html'
+    fields = ['review', 'rating', 'name', 'movie']
 
-    def get(self, request, id):
-        movie = get_object_or_404(Movie, pk=id)
-        review_form = self.review_form(request.POST or None, initial={
-            'movie': movie})
-        return render(request, 'review_form.html', {'review_form': review_form, 'movie': movie})
-
-    def post(self, request):
-        review = self.review_form.save(commit=False)
-        review.name = request.user
-        review.save()
-        return redirect('all_movies')
+    def get_initial(self):
+        movie = get_object_or_404(Movie, id=self.kwargs['pk'])
+        name = self.request.user
+        return {'movie': movie, 'name': name}
 
 
 class RegisterView(View):
@@ -105,10 +101,10 @@ class DetailMessageView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        if self.request.user == self.object.reciever:
+            self.object.readed = True
+            self.object.save()
         return context
-
-    #     if request.user == self.model.reciever:
-    #         self.model.readed = True
 
 
 class AnswerMessageView(View):
