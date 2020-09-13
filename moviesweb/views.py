@@ -6,8 +6,8 @@ from django.views.generic import list
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic.detail import DetailView
 from django.contrib.postgres.search import SearchVector
-from .models import Movie, Rating, Message
-from .forms import CustomUserCreationForm, SearchForm, MessageForm
+from .models import Movie, Rating, Message, Profile, User
+from .forms import CustomUserCreationForm, SearchForm, MessageForm, ProfileEditForm, UserEditForm
 
 
 class AllMoviesView(list.ListView):
@@ -50,6 +50,17 @@ class NewReviewView(CreateView):
         return {'movie': movie, 'name': name}
 
 
+class DeleteReviewView(DeleteView):
+    model = Rating
+    success_url = reverse_lazy('user_reviews')
+
+
+class EditReviewView(UpdateView):
+    model = Rating
+    fields = ['review', 'rating']
+    template_name_suffix = '_update_form'
+
+
 class RegisterView(View):
     def get(self, request):
         return render(request, "register.html", {"form": CustomUserCreationForm})
@@ -58,6 +69,7 @@ class RegisterView(View):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            profile = Profile.objects.create(user=user)
             login(request, user)
             return redirect(reverse("all_movies"))
 
@@ -79,6 +91,7 @@ class SearchView(View):
 
 class AllMessagesView(list.ListView):
     model = Message
+    ordering = ['-sended']
 
 
 class SendMessageView(View):
@@ -127,3 +140,31 @@ class AnswerMessageView(View):
 class DeleteMessageView(DeleteView):
     model = Message
     success_url = reverse_lazy('messages')
+
+
+class AccountOptionsView(View):
+    def get(self, request):
+        user = User.objects.get(pk=request.user.pk)
+        return render(request, 'account_options.html', {'user': user})
+
+
+class UserReviewsView(View):
+    def get(self, request):
+        name = request.user
+        reviews = Rating.objects.filter(name=request.user)
+        return render(request, 'user_reviews.html', {'name': name, 'reviews': reviews})
+
+
+class ProfileEditView(View):
+    def get(self, request):
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        return render(request, 'user_profile_edit.html', {'user_form': user_form, 'profile_form': profile_form})
+
+    def post(self, request):
+        user_form = UserEditForm(instance=request.user, data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile, data=request.POST, files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+        return redirect('account_options')

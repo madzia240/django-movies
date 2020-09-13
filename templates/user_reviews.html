@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+{% load bootstrap %}
+{% block title %}
+    {{ name }} profile
+{% endblock %}
+{% block page %}
+    <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+    <h5>your reviews:</h5>
+    <ul>
+        {% for review in reviews %}
+        <li><strong>{{ review.movie }}<br>{{ review.rating }}</strong><br>{{ review.review }}</li>
+        <a class="btn btn-primary" href="{% url 'review_edit' review.id %}" role="button"><i class="fas fa-edit"></i> edit</a>
+        <a class="btn btn-primary" href="{% url 'review_delete' review.id %}" role="button"><i class="fas fa-trash-alt"></i> delete</a><hr>
+        {% endfor %}
+    </ul>
+    <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+{% endblock %}

@@ -11,6 +11,7 @@
     {% if object.reciever == user %}
     <div class="card">
       <div class="card-body">
+        <p>sended: {{ object.sended }}</p>
         <h5 class="card-title">{{ object }}</h5>
         <p class="card-text">{{ object.msg_text|truncatewords:5 }}</p>
           {% if object.readed %}
@@ -35,6 +36,7 @@
     {% if object.sender == user %}
     <div class="card">
       <div class="card-body">
+        <p>sended: {{ object.sended }}</p>
         <h5 class="card-title">{{ object }}</h5>
         <p class="card-text">{{ object.msg_text|truncatewords:5 }}</p>
           <a href="{% url 'message_detail' object.id %}" class="btn btn-primary" role="button"><i

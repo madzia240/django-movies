@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from .models import Movie, Rating, Message
+from .models import Movie, Rating, Message, Profile, User
 
 
 class MovieForm(ModelForm):
@@ -29,3 +29,15 @@ class MessageForm(ModelForm):
     class Meta:
         model = Message
         fields = ['reciever', 'msg_text']
+
+
+class UserEditForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+
+class ProfileEditForm(ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['date_of_birth', 'photo']

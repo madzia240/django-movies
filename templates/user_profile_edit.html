@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block title %} Profile edit {% endblock %}
+{% block page %}
+    <div class="card">
+      <div class="card-body">
+          <h5>Edit profile</h5>
+        <form method="post" enctype="multipart/form-data">
+            {{ user_form|bootstrap }}
+            {{ profile_form|bootstrap }}
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit"><i class="fas fa-save"></i> save</button>
+            <a class="btn btn-primary" href="{% url 'account_options' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+        </form>
+      </div>
+    </div>
+{% endblock %}

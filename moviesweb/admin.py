@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Movie, Rating, Message
+from .models import Movie, Rating, Message, Profile
 
 
 @admin.register(Movie)
@@ -16,3 +16,8 @@ class RatingAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     list_display = ['sender', 'reciever', 'msg_text', 'readed']
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'date_of_birth', 'photo']

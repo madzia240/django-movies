@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+{% load bootstrap %}
+{% block title %} Account options {% endblock %}
+{% block page %}
+    <section class="account_profile">
+        <div class="card account">
+          <img src="/media/{{ user.profile.photo }}" alt="{{user.profile}}" class="card-img-top account_image">
+          <div class="card-body-account">
+            <h5 class="card-title">{{ user.profile }}</h5>
+              <p class="card-text">{{ user }}</br><strong>{{ user }}</strong></p>
+          </div>
+        </div>
+        <div class="card login">
+            <div class="card-body">
+                <h5 class="card-title">Account options</h5>
+                <a class="btn btn-primary" href="{% url 'user_profile_edit' %}" role="button"><i class="fas fa-user"></i> edit profile</a>
+                <a class="btn btn-primary" href="{% url 'password_change' %}" role="button"><i class="fas fa-exchange-alt"></i> password change</a>
+                <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-trash-restore-alt"></i> password reset</a>
+                <a class="btn btn-primary" href="{% url 'all_movies' %}" role="button"><i class="fas fa-undo-alt"></i> go back</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

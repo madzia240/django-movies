@@ -1,5 +1,7 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.urls import reverse
 
 
@@ -35,7 +37,17 @@ class Message(models.Model):
     reciever = models.ForeignKey(User, related_name='reciever', on_delete=models.CASCADE)
     msg_text = models.TextField(default='', blank=True)
     readed = models.BooleanField(default=False)
+    sended = models.DateTimeField(default=timezone.now, blank=True)
 
     def __str__(self):
         return f'message from {self.sender} to {self.reciever}'
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_of_birth = models.DateField(blank=True, null=True)
+    photo = models.ImageField(upload_to='users/%Y/%m/%d', blank=True)
+
+    def __str__(self):
+        return f'User {self.user}'
 

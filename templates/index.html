@@ -16,9 +16,18 @@
 
 <body>
     <nav>
+        <a class="btn btn-primary" href="{% url 'all_movies' %}"><i class="fas fa-home"></i></a>
         {% if user.is_authenticated %}
             <h6 class="card-text">Hello, {{ user.username }}</h6>
             <div class="login_logout">
+                <div class="dropdown">
+                  <button class="dropbtn btn btn-primary messages"><i class="fas fa-user"></i> profile</button>
+                  <div class="dropdown-content">
+                    <a href="{% url 'user_reviews' %}">your reviews</a>
+                    <a href="{% url 'account_options' %}">account options</a>
+                    <a href="#">Link 3</a>
+                  </div>
+                </div>
                 <a class="btn btn-primary messages" href="{% url 'messages' %}" role="button"><i
                         class="fas fa-comments"></i> messages</a>
                 <a class="btn btn-primary" href="{% url 'logout' %}" role="button"><i class="fas fa-sign-out-alt"></i>
